@@ -1,0 +1,156 @@
+---
+title: "Deliverable 2"
+output: html_notebook
+---
+
+```{r}
+# reading csv file
+```
+
+
+```{r}
+ecommerce=read.csv('Ecommerce_Sales_Data.csv', header=T, na.strings='')
+print(ecommerce)
+```
+
+
+```{r}
+# checking which fields have blank data
+
+print("Number of blank data in Day_of_Week: ")
+sum(is.na(ecommerce$Day_of_Week))
+
+print("Number of blank data in event_time: ")
+sum(is.na(ecommerce$event_time))
+
+print("Number of blank data in event_hour: ")
+sum(is.na(ecommerce$event_hour))
+
+print("Number of blank data in event_timezone: ")
+sum(is.na(ecommerce$event_timezone))
+
+print("Number of blank data in event_type: ")
+sum(is.na(ecommerce$event_type))
+
+print("Number of blank data in product_id: ")
+sum(is.na(ecommerce$product_id))
+
+print("Number of blank data in category_id: ")
+sum(is.na(ecommerce$category_id))
+
+print("Number of blank data in category: ")
+sum(is.na(ecommerce$category))
+
+print("Number of blank data in sub_category1: ")
+sum(is.na(ecommerce$sub_category1))
+
+print("Number of blank data in sub_category2: ")
+sum(is.na(ecommerce$sub_category2))
+
+print("Number of blank data in brand: ")
+sum(is.na(ecommerce$brand))
+
+print("Number of blank data in price: ")
+sum(is.na(ecommerce$price))
+
+print("Number of blank data in State: ")
+sum(is.na(ecommerce$State))
+
+print("Number of blank data in User_Score: ")
+sum(is.na(ecommerce$User_Score))
+```
+
+
+```{r}
+# Capitalizing string values
+
+library(stringr)
+
+ecommerce$sub_category1=str_to_title(ecommerce$sub_category1)
+ecommerce$sub_category2=str_to_title(ecommerce$sub_category2)
+ecommerce
+```
+
+
+```{r}
+# Converting categorical values into numerical values
+
+ecommerce$Day_of_Week=as.factor(ecommerce$Day_of_Week)
+ecommerce$event_timezone=as.factor(ecommerce$event_timezone)
+ecommerce$event_type=as.factor(ecommerce$event_type)
+ecommerce$category=as.factor(ecommerce$category)
+ecommerce$sub_category1=as.factor(ecommerce$sub_category1)
+ecommerce$sub_category2=as.factor(ecommerce$sub_category2)
+ecommerce$brand=as.factor(ecommerce$brand)
+ecommerce$State=as.factor(ecommerce$State)
+str(ecommerce)
+```
+
+
+```{r}
+# Plotting
+
+library('ggplot2')
+library(RColorBrewer)
+coul <- brewer.pal(12, "Set3") 
+
+# Events x Day of week
+
+counts=table(ecommerce$event_type, ecommerce$Day_of_Week)
+barplot(counts, main='', legend=rownames(counts), col=coul)
+
+# Analysis:
+# Sunday has the most views and purchases, so in order to improve that promotions can be 
+# made specifically for this day. The quantity of cart in this day is smaller, indicating a 
+# greater percentage of impulse purchases.
+# To days such as Friday, Thursday and Tuesday, recommend marketing campaigns in order to
+# raise views.
+```
+```{r}
+# Filtering by Event Type
+views = subset(ecommerce, event_type=="View")
+carts = subset(ecommerce, event_type=="Cart")
+purchases = subset(ecommerce, event_type=="Purchase")
+
+# Purchases x Category
+ggplot(purchases, aes(x=category, y=event_type))+geom_bar(stat="identity")
+```
+```{r}
+# Purchases x Event Hour
+hist(purchases$event_hour, col=coul)
+```
+
+
+```{r}
+# Views x Category
+ggplot(views, aes(x=category, y=event_type))+geom_bar(stat="identity")
+```
+
+
+```{r}
+# Views x Event Hour
+hist(views$event_hour, col=coul)
+```
+
+
+```{r}
+# Carts x Category
+ggplot(carts, aes(x=category, y=event_type))+geom_bar(stat="identity")
+```
+
+
+```{r}
+# Carts x Event Hour
+hist(carts$event_hour, col=coul)
+```
+
+
+```{r}
+# Filtering by electronics purchases
+elec_purchases = subset(purchases, category=="Electronics")
+
+# Electronic purchases x Day of week
+counts=table(elec_purchases$sub_category1, elec_purchases$Day_of_Week)
+barplot(counts, main='', legend=rownames(counts), col=coul) 
+```
+
